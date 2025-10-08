@@ -1,34 +1,30 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:phone_list_app/views/signUp/signUp.dart';
 import 'package:phone_list_app/widgets/authButton/authButton.dart';
 import 'package:phone_list_app/widgets/authHeader/authHeader.dart';
 import 'package:phone_list_app/widgets/goToSignUp/goToSignUp.dart';
 import 'package:phone_list_app/widgets/input/input.dart';
 import 'package:phone_list_app/widgets/logo/logo.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SignInState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-void login() {
 
+final emailController = TextEditingController();
+final passwordController = TextEditingController();
+final confirmPasswordController = TextEditingController();
+
+void register() {}
+
+void goToLogin(BuildContext context) {
+  Navigator.pop(context);
 }
 
-void goToRegister(context) {
-  Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => const SignUp()));
-}
-
-class _SignInState extends State<SignIn> {
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
+class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +38,7 @@ class _SignInState extends State<SignIn> {
             children: [
               Logo(),
               SizedBox(height: 80),
-              AuthHeader(header: "Zaloguj się do konta"),
+              AuthHeader(header: "Utwórz konto"),
               SizedBox(height: 30),
               Input(
                 placeholder: "Email",
@@ -55,12 +51,18 @@ class _SignInState extends State<SignIn> {
                 obscureText: true,
               ),
               SizedBox(height: 25),
-              Authbutton(onPressed: login, label: 'Zaloguj'),
+              Input(
+                placeholder: "Confirm Password",
+                controller: confirmPasswordController,
+                obscureText: true,
+              ),
+              SizedBox(height: 25),
+              Authbutton(onPressed: register, label: 'Utwórz konto'),
               Spacer(),
               GoToSignUp(
-                  text: 'Nie masz konta? ',
-                  textAction: "Zarejestruj się",
-                  onTap: () => goToRegister(context)
+                  text: 'Masz konto? ',
+                  textAction: "Zaloguj się",
+                  onTap: () => goToLogin(context)
               )
             ],
           ),
@@ -69,3 +71,5 @@ class _SignInState extends State<SignIn> {
     );
   }
 }
+
+
