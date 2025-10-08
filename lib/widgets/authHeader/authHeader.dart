@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class AuthHeader extends StatelessWidget {
   final String header;
@@ -14,7 +15,8 @@ class AuthHeader extends StatelessWidget {
       header,
       style: TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 28
+        fontSize: 28,
+          color: Colors.black54
       ),
     );
   }
