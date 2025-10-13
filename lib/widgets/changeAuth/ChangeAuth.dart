@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class GoToSignUp extends StatelessWidget {
+class ChangeAuth extends StatelessWidget {
   final String text;
   final String textAction;
   final VoidCallback onTap;
 
-  const GoToSignUp({
+  const ChangeAuth({
     super.key,
     required this.text,
     required this.textAction,

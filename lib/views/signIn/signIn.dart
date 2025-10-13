@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phone_list_app/views/signUp/signUp.dart';
 import 'package:phone_list_app/widgets/authButton/authButton.dart';
 import 'package:phone_list_app/widgets/authHeader/authHeader.dart';
-import 'package:phone_list_app/widgets/goToSignUp/goToSignUp.dart';
+import 'package:phone_list_app/widgets/changeAuth/ChangeAuth.dart';
 import 'package:phone_list_app/widgets/input/input.dart';
 import 'package:phone_list_app/widgets/logo/logo.dart';
 
@@ -13,59 +13,104 @@ class SignIn extends StatefulWidget {
   State<StatefulWidget> createState() => _SignInState();
 }
 
-void login() {
-
-}
-
-void goToRegister(context) {
-  Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => const SignUp()));
-}
-
 class _SignInState extends State<SignIn> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  String? emailError;
+  String? passwordError;
+
+  final emailPattern = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+
+  void goToRegister(context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const SignUp()));
+  }
+
+  bool emailValidation(email) {
+    final regex =RegExp(emailPattern);
+    if (email.isEmpty || !regex.hasMatch(email)) {
+      setState(() {
+        emailError = "Nieprawidłowy adres e-mail";
+      });
+      return false;
+    } else {
+      setState(() {
+        emailError = null;
+      });
+      return true;
+    }
+  }
+
+  bool passwordValidation(password) {
+    if (password.length < 6) {
+      setState(() {
+        passwordError = "Hasło ma mniej niż 6 znaków";
+      });
+      return false;
+    } else {
+      setState(() {
+        passwordError = null;
+      });
+      return true;
+    }
+  }
+
+  void login() {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    final isEmailOk = emailValidation(email);
+    final isPassOk  = passwordValidation(password);
+
+    if(isEmailOk && isPassOk) {
+      print("zalogowano");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F7FF),
       body: SafeArea(
-        child:
-        Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Logo(),
-              SizedBox(height: 80),
-              AuthHeader(header: "Zaloguj się do konta"),
-              SizedBox(height: 30),
+              const SizedBox(height: 80),
+              const AuthHeader(header: "Zaloguj się do konta"),
+              const SizedBox(height: 30),
               Input(
                 placeholder: "Email",
                 controller: emailController,
+                errorText: emailError,
               ),
-              SizedBox(height: 25),
+              const SizedBox(height: 25),
               Input(
                 placeholder: "Password",
                 controller: passwordController,
                 obscureText: true,
+                errorText: passwordError,
               ),
-              SizedBox(height: 25),
+              const SizedBox(height: 25),
               Authbutton(onPressed: login, label: 'Zaloguj'),
-              Spacer(),
-              GoToSignUp(
-                  text: 'Nie masz konta? ',
-                  textAction: "Zarejestruj się",
-                  onTap: () => goToRegister(context)
-              )
+              const SizedBox(height: 50),
+              ChangeAuth(
+                text: 'Nie masz konta? ',
+                textAction: "Zarejestruj się",
+                onTap: () => goToRegister(context),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
       ),
     );
+
   }
 }
