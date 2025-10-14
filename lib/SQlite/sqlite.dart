@@ -18,20 +18,25 @@ class DatabaseHelper {
     });
   }
 
-  Future<bool> loginDb(UserModel user) async {
+  Future<bool> loginDb(String email, String password) async {
     final Database db = await initDB();
 
     var res = await db.query(
       'users',
       where: 'email = ? AND password = ?',
-      whereArgs: [user.email, user.password],
+      whereArgs: [email, password],
     );
 
     return res.isNotEmpty;
   }
 
-  Future<bool> signUpDb(UserModel user) async {
+  Future<bool> signUpDb(String email, String password) async {
     final Database db = await initDB();
+    UserModel user = UserModel(
+      email: email,
+      password: password
+    );
+
     try {
       await db.insert(
         'users',
