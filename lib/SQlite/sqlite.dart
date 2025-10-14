@@ -1,18 +1,48 @@
 import 'package:path/path.dart';
 import 'package:phone_list_app/models/noteModel.dart';
+import 'package:phone_list_app/models/UserModel.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
   final databaseName = "note.db";
-  String noteTable = "CREATE TABLE notes (Id INTEGER PRIMARY KEY AUTOINCREMENT, title TEX, content TEXT)";
+  String noteTable = "CREATE TABLE notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT)";
+  String userTable = "CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, password TEXT)";
 
   Future<Database> initDB() async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, databaseName);
     
     return openDatabase(path, version: 1, onCreate: (db, version) async {
+      await db.execute(userTable);
       await db.execute(noteTable);
     });
+  }
+
+  Future<bool> loginDb(UserModel user) async {
+    final Database db = await initDB();
+
+    var res = await db.query(
+      'users',
+      where: 'email = ? AND password = ?',
+      whereArgs: [user.email, user.password],
+    );
+
+    return res.isNotEmpty;
+  }
+
+  Future<bool> signUpDb(UserModel user) async {
+    final Database db = await initDB();
+    try {
+      await db.insert(
+        'users',
+        user.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.fail,
+      );
+      return true;
+    } catch (e) {
+      print("Błąd rejestracji: ${e.toString()}");
+      return false;
+    }
   }
 
 
