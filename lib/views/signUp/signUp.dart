@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:phone_list_app/SQlite/sqlite.dart';
+import 'package:phone_list_app/views/notes/notes.dart';
 import 'package:phone_list_app/widgets/authButton/authButton.dart';
 import 'package:phone_list_app/widgets/authHeader/authHeader.dart';
 import 'package:phone_list_app/widgets/changeAuth/ChangeAuth.dart';
@@ -18,6 +20,8 @@ class _SignUpState extends State<SignUp> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+
+  final db = DatabaseHelper();
 
   String? emailError;
   String? passwordError;
@@ -61,7 +65,7 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-  void register() {
+  void  register() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
     final confirmPassword = confirmPasswordController.text.trim();
@@ -70,7 +74,14 @@ class _SignUpState extends State<SignUp> {
     final isPassOk  = passwordValidation(password, confirmPassword);
 
     if(isEmailOk && isPassOk) {
-      print("zarejestrowano");
+      var res = await db.signUpDb(email, password);
+      if(res == true) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Notes()));
+      } else {
+        setState(() {
+          emailError = "Konto już istnieje";
+        });
+      }
     }
   }
 

@@ -79,7 +79,6 @@ class _SignInState extends State<SignIn> {
             emailError = "Nieprawidłowy email lub hasło";
           });
         }
-
     }
   }
 
