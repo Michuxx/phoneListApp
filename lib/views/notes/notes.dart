@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phone_list_app/SQlite/sqlite.dart';
 import 'package:phone_list_app/models/noteModel.dart';
+import 'package:phone_list_app/views/notes/createNote.dart';
 
 class Notes extends StatefulWidget {
   final int userId;
@@ -33,7 +34,12 @@ class _NotesState extends State<Notes> {
       appBar: AppBar(
         title: Text("Notatki"),
       ),
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => CreateNote(userId: widget.userId)));
+        },
+        child: Icon(Icons.add),
+      ),
       body: FutureBuilder<List<NoteModel>>(
           future: notes,
           builder: (BuildContext context, AsyncSnapshot<List<NoteModel>> snapshot){
@@ -52,7 +58,9 @@ class _NotesState extends State<Notes> {
               return Text(snapshot.error.toString());
             } else {
               final items = snapshot.data ?? <NoteModel>[];
-              return ListView.builder(itemBuilder: (context, index) {
+              return ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(items[index].title),
                 );
