@@ -72,8 +72,8 @@ class _SignInState extends State<SignIn> {
 
     if(isEmailOk && isPassOk) {
         var res = await db.loginDb(email, password);
-        if(res == true) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Notes()));
+        if(res != null) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Notes(userId: res,)));
         } else {
           setState(() {
             emailError = "Nieprawidłowy email lub hasło";

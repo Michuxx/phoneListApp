@@ -75,8 +75,8 @@ class _SignUpState extends State<SignUp> {
 
     if(isEmailOk && isPassOk) {
       var res = await db.signUpDb(email, password);
-      if(res == true) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Notes()));
+      if(res != null) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Notes(userId: res)));
       } else {
         setState(() {
           emailError = "Konto już istnieje";

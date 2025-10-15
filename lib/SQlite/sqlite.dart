@@ -5,32 +5,47 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
   final databaseName = "note.db";
-  String noteTable = "CREATE TABLE notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT)";
+  String noteTable = "CREATE TABLE notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, userId INTEGER, FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE)";
   String userTable = "CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, password TEXT)";
+  int version = 2;
 
   Future<Database> initDB() async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, databaseName);
     
-    return openDatabase(path, version: 1, onCreate: (db, version) async {
+    return openDatabase(path, version: version,
+        onCreate: (db, version) async {
       await db.execute(userTable);
       await db.execute(noteTable);
+    },
+
+    onUpgrade: (db, oldVersion, newVersion) async {
+      if (oldVersion < version) {
+        await db.execute("DROP TABLE IF EXISTS notes");
+        await db.execute("DROP TABLE IF EXISTS users");
+        await db.execute(userTable);
+        await db.execute(noteTable);
+      }
     });
   }
 
-  Future<bool> loginDb(String email, String password) async {
+  Future<int?> loginDb(String email, String password) async {
     final Database db = await initDB();
 
     var res = await db.query(
       'users',
+      columns: ['id'],
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
 
-    return res.isNotEmpty;
+    if (res.isNotEmpty) {
+      return res.first['id'] as int?;
+    }
+    return null;
   }
 
-  Future<bool> signUpDb(String email, String password) async {
+  Future<int?> signUpDb(String email, String password) async {
     final Database db = await initDB();
     UserModel user = UserModel(
       email: email,
@@ -38,15 +53,15 @@ class DatabaseHelper {
     );
 
     try {
-      await db.insert(
+      var id = await db.insert(
         'users',
         user.toMap(),
         conflictAlgorithm: ConflictAlgorithm.fail,
       );
-      return true;
+      return id > 0 ? id : null;
     } catch (e) {
       print("Błąd rejestracji: ${e.toString()}");
-      return false;
+      return null;
     }
   }
 
@@ -58,9 +73,13 @@ class DatabaseHelper {
     return db.insert('notes', note.toMap());
   }
 
-  Future<List<NoteModel>> getNotes() async {
+  Future<List<NoteModel>> getNotes(int userId) async {
     final Database db = await initDB();
-    List<Map<String, Object?>> result = await db.query('notes');
+    List<Map<String, Object?>> result = await db.query(
+      'notes',
+      where: 'userId = ?',
+      whereArgs: [userId]
+    );
     return result.map((e) => NoteModel.fromMap(e)).toList();
   }
 
@@ -72,7 +91,7 @@ class DatabaseHelper {
   Future<int> updateNote(title, content, noteId) async {
     final Database db = await initDB();
     return db.rawUpdate(
-      "update notes set title = ?, content = ?, where id = ?",
+      "update notes set title = ?, content = ? where id = ?",
         [title, content, noteId]);
   }
 
