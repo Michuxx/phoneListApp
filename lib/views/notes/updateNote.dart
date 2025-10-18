@@ -1,35 +1,46 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phone_list_app/SQlite/sqlite.dart';
-import 'package:phone_list_app/models/noteModel.dart';
 
-class CreateNote extends StatefulWidget {
+class UpdateNote extends StatefulWidget {
 
-  final int userId;
+  final int noteId;
+  final String noteTitle;
+  final String contentTitle;
 
-  const CreateNote({
+  const UpdateNote({
     super.key,
-    required this.userId
+    required this.noteId,
+    required this.noteTitle,
+    required this.contentTitle,
   });
 
   @override
-  State<CreateNote> createState() => _CreateNoteState();
+  State<UpdateNote> createState() => _UpdateNoteState();
 }
 
-class _CreateNoteState extends State<CreateNote> {
-  final title = TextEditingController();
-  final content = TextEditingController();
+class _UpdateNoteState extends State<UpdateNote> {
+
+  late final TextEditingController title;
+  late final TextEditingController content;
 
   final db = DatabaseHelper();
+
+  @override
+  void initState() {
+    super.initState();
+    title = TextEditingController(text: widget.noteTitle);
+    content = TextEditingController(text: widget.contentTitle);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Stwórz notatkę"),
+        title: Text("Twoja notatka"),
         actions: [IconButton(
             onPressed: () {
-              db.createNote(NoteModel(title: title.text, content: content.text, userId: widget.userId)).whenComplete(() {
+              db.updateNote(title.text, content.text, widget.noteId).whenComplete(() {
                 Navigator.of(context).pop(true);
               });
             },

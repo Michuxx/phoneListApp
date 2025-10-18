@@ -12,14 +12,14 @@ class NoteModel {
   });
 
   factory NoteModel.fromMap(Map<String, dynamic> json) => NoteModel(
-    id: json["Id"],
+    id: json["id"] as int?,
     title: json["title"],
     content: json["content"],
     userId: json["userId"]
   );
 
   Map<String, dynamic> toMap() => {
-    "Id": id,
+    "id": id,
     "title": title,
     "content": content,
     "userId": userId
