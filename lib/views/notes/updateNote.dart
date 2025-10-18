@@ -23,8 +23,49 @@ class _UpdateNoteState extends State<UpdateNote> {
 
   late final TextEditingController title;
   late final TextEditingController content;
+  String? titleError;
+  String? contentError;
 
   final db = DatabaseHelper();
+
+  bool titleValidation(input) {
+    if (input == null || input == "") {
+      setState(() {
+        titleError = "tytuł nie może być pusty!";
+      });
+      return false;
+    } else {
+      setState(() {
+        titleError = null;
+      });
+      return true;
+    }
+  }
+
+  bool contentValidation(input) {
+    if (input == null || input == "") {
+      setState(() {
+        contentError = "treść nie może być pusta!";
+      });
+      return false;
+    } else {
+      setState(() {
+        contentError = null;
+      });
+      return true;
+    }
+  }
+
+  void saveNote() {
+    final isTitleValid = titleValidation(title.text);
+    final isContentValid = contentValidation(content.text);
+
+    if (isTitleValid && isContentValid) {
+      db.updateNote(title.text, content.text, widget.noteId).whenComplete(() {
+        Navigator.of(context).pop(true);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -39,11 +80,7 @@ class _UpdateNoteState extends State<UpdateNote> {
       appBar: AppBar(
         title: Text("Twoja notatka"),
         actions: [IconButton(
-            onPressed: () {
-              db.updateNote(title.text, content.text, widget.noteId).whenComplete(() {
-                Navigator.of(context).pop(true);
-              });
-            },
+            onPressed: saveNote,
             icon: Icon(Icons.check))],
       ),
       body: Form(
@@ -53,14 +90,9 @@ class _UpdateNoteState extends State<UpdateNote> {
               children: [
                 TextFormField(
                   controller: title,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Brakuje tytułu";
-                    }
-                    return null;
-                  },
                   decoration: InputDecoration(
                     label: Text("Tytuł"),
+                    errorText: titleError
                   ),
                 ),
                 TextFormField(
@@ -69,6 +101,7 @@ class _UpdateNoteState extends State<UpdateNote> {
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
                     label: Text("Treść"),
+                    errorText: contentError
                   ),
                 )
               ],),
