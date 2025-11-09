@@ -93,7 +93,7 @@ class _SignUpState extends State<SignUp> {
     final isNameOk = nameValidation(name);
 
     if(isEmailOk && isPassOk && isNameOk) {
-      var res = await db.signUpDb(email, password);
+      var res = await db.signUpDb(email, name ,password);
       if(res != null) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => Notes(userId: res)));
       } else {

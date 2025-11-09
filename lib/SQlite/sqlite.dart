@@ -6,8 +6,8 @@ import 'package:sqflite/sqflite.dart';
 class DatabaseHelper {
   final databaseName = "note.db";
   String noteTable = "CREATE TABLE notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, content TEXT, userId INTEGER, FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE)";
-  String userTable = "CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, password TEXT)";
-  int version = 2;
+  String userTable = "CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE, username TEXT UNIQUE, password TEXT)";
+  int version = 4;
 
   Future<Database> initDB() async {
     final databasePath = await getDatabasesPath();
@@ -35,8 +35,8 @@ class DatabaseHelper {
     var res = await db.query(
       'users',
       columns: ['id'],
-      where: 'email = ? AND password = ?',
-      whereArgs: [email, password],
+      where: '(email = ? OR username = ?) AND password = ?',
+      whereArgs: [email, email ,password],
     );
 
     if (res.isNotEmpty) {
@@ -45,11 +45,12 @@ class DatabaseHelper {
     return null;
   }
 
-  Future<int?> signUpDb(String email, String password) async {
+  Future<int?> signUpDb(String email, String name, String password) async {
     final Database db = await initDB();
     UserModel user = UserModel(
       email: email,
-      password: password
+      password: password,
+      username: name,
     );
 
     try {
