@@ -7,13 +7,10 @@ class Logo extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: Padding(
-        padding: const EdgeInsets.only(top: 140),
-        child: Text(
-          'DSW 56135',
-          style: TextStyle(
-              fontSize: 42,
-              fontWeight: FontWeight.bold
-          ),
+        padding: const EdgeInsets.only(top: 90),
+        child: Image.asset(
+            'lib/images/logo.png',
+        width: 150,
         ),
       ),
     );

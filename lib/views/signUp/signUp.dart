@@ -20,15 +20,32 @@ class _SignUpState extends State<SignUp> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final fullnameController = TextEditingController();
 
   final db = DatabaseHelper();
 
   String? emailError;
   String? passwordError;
   String? confirmPasswordError;
+  String? fullnameError;
+
 
 
   final emailPattern = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+
+  bool nameValidation(name) {
+    if(name.isEmpty) {
+      setState(() {
+        fullnameError = "Imię nie może być puste";
+      });
+      return false;
+    } else {
+      setState(() {
+        fullnameError = null;
+      });
+      return true;
+    }
+  }
 
   bool emailValidation(email) {
     final regex =RegExp(emailPattern);
@@ -69,11 +86,13 @@ class _SignUpState extends State<SignUp> {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
     final confirmPassword = confirmPasswordController.text.trim();
+    final name = fullnameController.text.trim();
 
     final isEmailOk = emailValidation(email);
     final isPassOk  = passwordValidation(password, confirmPassword);
+    final isNameOk = nameValidation(name);
 
-    if(isEmailOk && isPassOk) {
+    if(isEmailOk && isPassOk && isNameOk) {
       var res = await db.signUpDb(email, password);
       if(res != null) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => Notes(userId: res)));
@@ -100,35 +119,46 @@ class _SignUpState extends State<SignUp> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Logo(),
-              SizedBox(height: 80),
-              AuthHeader(header: "Utwórz konto"),
+              SizedBox(height: 130),
+              AuthHeader(header: "Sign Up"),
               SizedBox(height: 30),
+              Input(
+                placeholder: "Fullname",
+                controller: fullnameController,
+                errorText: fullnameError,
+                prefixIcon: Icon(Icons.person_outline),
+              ),
+              SizedBox(height: 15),
               Input(
                 placeholder: "Email",
                 controller: emailController,
                 errorText: emailError,
+                prefixIcon: Icon(Icons.email_outlined),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: 15),
               Input(
                 placeholder: "Password",
                 controller: passwordController,
                 obscureText: true,
                 errorText: passwordError,
+                prefixIcon: Icon(Icons.lock_outline),
+                suffixIcon: Icon(Icons.visibility),
               ),
-              SizedBox(height: 25),
+              SizedBox(height: 15),
               Input(
                 placeholder: "Confirm Password",
                 controller: confirmPasswordController,
                 obscureText: true,
                 errorText: confirmPasswordError,
+                prefixIcon: Icon(Icons.lock_outline),
+                suffixIcon: Icon(Icons.visibility),
               ),
               SizedBox(height: 25),
-              Authbutton(onPressed: register, label: 'Utwórz konto'),
-              SizedBox(height: 20),
+              Authbutton(onPressed: register, label: 'Sign Up'),
+              SizedBox(height: 130),
               ChangeAuth(
-                  text: 'Masz konto? ',
-                  textAction: "Zaloguj się",
+                  text: 'Already have an account ? ',
+                  textAction: "Sign In",
                   onTap: () => goToLogin(context)
               )
             ],

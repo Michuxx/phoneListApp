@@ -25,8 +25,6 @@ class _SignInState extends State<SignIn> {
   String? emailError;
   String? passwordError;
 
-  final emailPattern = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
-
   void goToRegister(context) {
     Navigator.push(
         context,
@@ -35,10 +33,9 @@ class _SignInState extends State<SignIn> {
   }
 
   bool emailValidation(email) {
-    final regex =RegExp(emailPattern);
-    if (email.isEmpty || !regex.hasMatch(email)) {
+    if (email.isEmpty) {
       setState(() {
-        emailError = "Nieprawidłowy adres e-mail";
+        emailError = "Nieprawidłowy adres e-mail lub nazwa";
       });
       return false;
     } else {
@@ -94,12 +91,13 @@ class _SignInState extends State<SignIn> {
             children: [
               Logo(),
               const SizedBox(height: 80),
-              const AuthHeader(header: "Zaloguj się do konta"),
+              const AuthHeader(header: "Sign in"),
               const SizedBox(height: 30),
               Input(
-                placeholder: "Email",
+                placeholder: "Email or name",
                 controller: emailController,
                 errorText: emailError,
+                prefixIcon: Icon(Icons.person_outline),
               ),
               const SizedBox(height: 25),
               Input(
@@ -107,13 +105,27 @@ class _SignInState extends State<SignIn> {
                 controller: passwordController,
                 obscureText: true,
                 errorText: passwordError,
+                prefixIcon: Icon(Icons.lock_outline),
+                suffixIcon: Icon(Icons.visibility),
               ),
               const SizedBox(height: 25),
-              Authbutton(onPressed: login, label: 'Zaloguj'),
-              const SizedBox(height: 50),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "Forgot password?",
+                  style: TextStyle(
+                    color: Color(0xFF471AA0), // Możesz wybrać dowolny kolor
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 25),
+              Authbutton(onPressed: login, label: 'Sign In'),
+              const SizedBox(height: 120),
               ChangeAuth(
-                text: 'Nie masz konta? ',
-                textAction: "Zarejestruj się",
+                text: "Don't have account? ",
+                textAction: "Sign Up",
                 onTap: () => goToRegister(context),
               ),
               const SizedBox(height: 20),

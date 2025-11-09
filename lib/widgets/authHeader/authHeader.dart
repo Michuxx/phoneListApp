@@ -16,7 +16,7 @@ class AuthHeader extends StatelessWidget {
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 28,
-          color: Colors.black54
+          color: Color(0xFF471AA0)
       ),
     );
   }

@@ -16,10 +16,10 @@ class Authbutton extends StatelessWidget {
     return ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFF1A3DC1),
+        backgroundColor: Color(0xFFBB84E8),
           minimumSize: Size(double .infinity, 65),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8)
+            borderRadius: BorderRadius.circular(20)
           ),
           elevation: 6,
           shadowColor: Colors.black.withOpacity(0.2),

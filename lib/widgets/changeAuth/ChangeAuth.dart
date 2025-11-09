@@ -21,7 +21,7 @@ class ChangeAuth extends StatelessWidget {
          Text(
           text,
           style: TextStyle(
-              color: Colors.black54,
+            color: Color(0xFF471AA0),
             fontSize: 20,
           ),
 
@@ -35,7 +35,10 @@ class ChangeAuth extends StatelessWidget {
             ),
             child: Text(
                 textAction,
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ))
       ],
     );

@@ -5,6 +5,8 @@ class Input extends StatelessWidget {
   final bool obscureText;
   final TextEditingController controller;
   final String? errorText;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
 
   const Input({
     super.key,
@@ -12,6 +14,8 @@ class Input extends StatelessWidget {
     this.obscureText = false,
     required this.controller,
     this.errorText,
+    this.prefixIcon,
+    this.suffixIcon,
   });
 
   @override
@@ -25,10 +29,10 @@ class Input extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(20),
             border: hasError
-                ? Border.all(color: Colors.red, width: 1.5)
-                : null,
+                ? Border.all(color: Colors.red, width: 3)
+                : Border.all(color: Color(0xFF9747FF), width: 3),
             boxShadow: [
               BoxShadow(
                 color: hasError
@@ -47,8 +51,11 @@ class Input extends StatelessWidget {
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 18,
+                vertical: 8,
               ),
+              prefixIcon: prefixIcon,
+              suffixIcon: suffixIcon,
+              prefixIconColor: Color(0xFF9747FF),
             ),
           ),
         ),
