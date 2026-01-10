@@ -7,6 +7,7 @@ import 'package:phone_list_app/widgets/authHeader/authHeader.dart';
 import 'package:phone_list_app/widgets/changeAuth/ChangeAuth.dart';
 import 'package:phone_list_app/widgets/input/input.dart';
 import 'package:phone_list_app/widgets/logo/logo.dart';
+import 'package:phone_list_app/widgets/socialLoginBlock/socialLoginBlock.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -90,7 +91,7 @@ class _SignInState extends State<SignIn> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Logo(),
-              const SizedBox(height: 80),
+              const SizedBox(height: 10),
               const AuthHeader(header: "Sign in"),
               const SizedBox(height: 30),
               Input(
@@ -114,7 +115,7 @@ class _SignInState extends State<SignIn> {
                 child: Text(
                   "Forgot password?",
                   style: TextStyle(
-                    color: Color(0xFF471AA0), // Możesz wybrać dowolny kolor
+                    color: Color(0xFF471AA0),
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                   ),
@@ -122,7 +123,9 @@ class _SignInState extends State<SignIn> {
               ),
               const SizedBox(height: 25),
               Authbutton(onPressed: login, label: 'Sign In'),
-              const SizedBox(height: 120),
+              const SizedBox(height: 60),
+              const SocialLoginBlock(),
+              const SizedBox(height: 50),
               ChangeAuth(
                 text: "Don't have account? ",
                 textAction: "Sign Up",
