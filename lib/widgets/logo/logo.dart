@@ -7,7 +7,7 @@ class Logo extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: Padding(
-        padding: const EdgeInsets.only(top: 90),
+        padding: const EdgeInsets.only(top: 50),
         child: Image.asset(
             'lib/images/logo.png',
         width: 150,
