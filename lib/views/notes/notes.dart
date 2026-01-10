@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phone_list_app/SQlite/sqlite.dart';
 import 'package:phone_list_app/models/noteModel.dart';
+import 'package:phone_list_app/services/sessionManager/sessionManager.dart';
 import 'package:phone_list_app/views/notes/createNote.dart';
 import 'package:phone_list_app/views/notes/updateNote.dart';
+import 'package:phone_list_app/views/signIn/signIn.dart';
 
 class Notes extends StatefulWidget {
   final int userId;
@@ -39,40 +41,56 @@ class _NotesState extends State<Notes> {
     });
   }
 
+  void logout() async {
+    await SessionManager.clearSession();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const SignIn()),
+          (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notatki"),
+        title: const Text("Notatki"),
+        actions: [
+          IconButton(
+            onPressed: logout,
+            icon: const Icon(Icons.logout),
+            tooltip: 'Wyloguj się',
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => CreateNote(userId: widget.userId)))
               .then((value) {
-                if (value) {
-                  refreshNotes();
-                }
+            if (value != null && value) {
+              refreshNotes();
+            }
           });
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: FutureBuilder<List<NoteModel>>(
           future: notes,
           builder: (BuildContext context, AsyncSnapshot<List<NoteModel>> snapshot){
             if(snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-              return Center(
+              return const Center(
                   child: Text(
-                  "Brak notatek",
+                    "Brak notatek",
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 28
+                        fontWeight: FontWeight.bold,
+                        fontSize: 28
                     ),
-              ));
+                  ));
             } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
+              return Center(child: Text(snapshot.error.toString()));
             } else {
               final items = snapshot.data ?? <NoteModel>[];
               return ListView.builder(
@@ -81,7 +99,7 @@ class _NotesState extends State<Notes> {
                     return ListTile(
                       title: Text(items[index].title),
                       trailing: IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
                             deleteNote(items[index].id);
                           }),
@@ -91,7 +109,7 @@ class _NotesState extends State<Notes> {
                             contentTitle: items[index].content,
                             noteId: items[index].id as int
                         ))).then((value) {
-                          if (value) {
+                          if (value != null && value) {
                             refreshNotes();
                           }
                         });
@@ -99,7 +117,7 @@ class _NotesState extends State<Notes> {
                     );
                   });
             }
-      }),
+          }),
     );
   }
 }

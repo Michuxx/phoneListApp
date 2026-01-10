@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phone_list_app/SQlite/sqlite.dart';
+import 'package:phone_list_app/services/sessionManager/sessionManager.dart';
 import 'package:phone_list_app/views/notes/notes.dart';
 import 'package:phone_list_app/widgets/authButton/authButton.dart';
 import 'package:phone_list_app/widgets/authHeader/authHeader.dart';
@@ -95,7 +96,8 @@ class _SignUpState extends State<SignUp> {
     if(isEmailOk && isPassOk && isNameOk) {
       var res = await db.signUpDb(email, name ,password);
       if(res != null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Notes(userId: res)));
+        await SessionManager.saveUserSession(res);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Notes(userId: res)));
       } else {
         setState(() {
           emailError = "Konto już istnieje";

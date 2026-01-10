@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phone_list_app/SQlite/sqlite.dart';
+import 'package:phone_list_app/services/sessionManager/sessionManager.dart';
 import 'package:phone_list_app/views/notes/notes.dart';
 import 'package:phone_list_app/views/signUp/signUp.dart';
 import 'package:phone_list_app/widgets/authButton/authButton.dart';
@@ -32,6 +33,7 @@ class _SignInState extends State<SignIn> {
         MaterialPageRoute(
             builder: (context) => const SignUp()));
   }
+
 
   bool emailValidation(email) {
     if (email.isEmpty) {
@@ -71,7 +73,8 @@ class _SignInState extends State<SignIn> {
     if(isEmailOk && isPassOk) {
         var res = await db.loginDb(email, password);
         if(res != null) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Notes(userId: res,)));
+          await SessionManager.saveUserSession(res);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Notes(userId: res,)));
         } else {
           setState(() {
             emailError = "Nieprawidłowy email lub hasło";
